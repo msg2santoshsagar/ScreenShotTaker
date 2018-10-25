@@ -12,25 +12,36 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 
-/*
+/**
  * This Class will help to take the screen shot.
+ *
+ * @author Santosh Sagar
  */
 
 public class ScreenCapture {
-	
-	/*
-	 * Call This method, It will find the path from directroyHelper and created image there.
+
+	/**
+	 * This will take screenshot and save the image in selected directory
 	 */
 	public  String doCapture() {
-		String result="Default";   
+
+		String result="Default";
+
 		try {
+
 			Robot robot = new Robot();
+
 			String format = "jpg";
 			String fileName ;
 			String directory="";
+
 			try{
 				directory=new DirectoryHelper().getDir();
-			}catch (Exception e){}
+			}catch (Exception e){
+				System.err.println("Error occured whle getting user directory");
+				e.printStackTrace();
+			}
+
 			Date date=new Date();
 			SimpleDateFormat dateFormat=new SimpleDateFormat("d-M-y");
 			SimpleDateFormat dateFormat2=new SimpleDateFormat("H:mm:ss");
