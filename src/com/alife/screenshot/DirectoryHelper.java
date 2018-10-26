@@ -18,33 +18,43 @@ public class DirectoryHelper {
 	private static final String dirPathFileName = ".screenShotTaker";
 
 	private static String screenShotDirectory = null;
+	private static boolean inMemoryStorage = false;
+	private static boolean initialzed      = false;
 
 	public DirectoryHelper() {
 
-		dirPath = "";
+		if (DirectoryHelper.initialzed) {
+			return;
+		}
+
+		DirectoryHelper.initialzed = true;
+
+		DirectoryHelper.dirPath = "";
 
 		dirPath = System.getProperty("user.home");
 
-		if (!dirPath.equals(""))
-			dirPath = dirPath + "/";
-		if (!dirPath.endsWith("/")) {
-			dirPath += "/";
+		if (!DirectoryHelper.dirPath.equals(""))
+			DirectoryHelper.dirPath = dirPath + "/";
+		if (!DirectoryHelper.dirPath.endsWith("/")) {
+			DirectoryHelper.dirPath += "/";
 		}
 
-		File file = new File(dirPath + dirPathFileName);
+		File file = new File(DirectoryHelper.dirPath + DirectoryHelper.dirPathFileName);
 		if (!file.exists()) {
 			try {
 				setDir("");
 			} catch (IOException e) {
 				e.printStackTrace();
+				// System.out.println("it seems we can't create file in given location");
+				DirectoryHelper.inMemoryStorage = true;
+				DirectoryHelper.screenShotDirectory = "";
 			}
 		} else {
 			// File exist so check the validity of the content
-			//System.out.println("Check validity of the content");
 			try {
-				String dir = getDir();
-				//System.out.println("Dir found :: " + dir);
-				file = new File(dir);
+				String d = getDir();
+				// System.out.println("Dir found :: " + dir);
+				file = new File(d);
 				if (!file.exists()) {
 					setDir("");
 				}
@@ -55,7 +65,7 @@ public class DirectoryHelper {
 		}
 	}
 
-	public String getDir(boolean readFromFile) throws FileNotFoundException {
+	private String getDir(boolean readFromFile) throws FileNotFoundException {
 		if (!readFromFile) {
 			return getDir();
 		}
@@ -65,16 +75,23 @@ public class DirectoryHelper {
 		if (in.hasNext())
 			result = in.nextLine();
 		in.close();
-		screenShotDirectory = result;
+		DirectoryHelper.screenShotDirectory = result;
 		return result;
 
 	}
 
+	/**
+	 * To return the directory for storing screenshots.
+	 */
 	public String getDir() throws FileNotFoundException {
+		if (DirectoryHelper.inMemoryStorage) {
+			return DirectoryHelper.screenShotDirectory;
+		}
+
 		if (screenShotDirectory == null) {
 			return getDir(true);
 		}
-		return screenShotDirectory;
+		return DirectoryHelper.screenShotDirectory;
 	}
 
 	/**
@@ -82,9 +99,14 @@ public class DirectoryHelper {
 	 *
 	 */
 	public int setDir(String dir) throws IOException {
-		//System.out.println("Set dir called :: "+dir);
+
+		if (DirectoryHelper.inMemoryStorage) {
+			DirectoryHelper.screenShotDirectory = dir;
+			return 1;
+		}
+
 		int result = 0;
-		File file = new File(dirPath + dirPathFileName);
+		File file = new File(DirectoryHelper.dirPath + DirectoryHelper.dirPathFileName);
 		FileWriter out = new FileWriter(file);
 		out.write(dir);
 		result = 1;

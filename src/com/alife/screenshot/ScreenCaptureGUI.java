@@ -91,9 +91,7 @@ public class ScreenCaptureGUI {
 						File f=new File(cdr);
 						if(f.exists())
 							chooser.setCurrentDirectory(f);
-					} catch (FileNotFoundException e) {
-
-					}
+					} catch (FileNotFoundException e) {}
 
 					if( chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
 
@@ -116,10 +114,6 @@ public class ScreenCaptureGUI {
 
 			}
 		};
-
-
-
-
 
 		button1.setActionCommand("captureA");
 		button1.addActionListener(actionListener);

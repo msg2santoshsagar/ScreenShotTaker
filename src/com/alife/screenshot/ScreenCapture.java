@@ -37,6 +37,7 @@ public class ScreenCapture {
 
 			try{
 				directory=new DirectoryHelper().getDir();
+				System.out.println("Got the directory :: "+directory);
 			}catch (Exception e){
 				System.err.println("Error occured whle getting user directory");
 				e.printStackTrace();
