@@ -15,41 +15,79 @@ import java.util.Scanner;
 public class DirectoryHelper {
 
 	private static String dirPath;
-	private static final String dirPathFileName=".screenShotTaker";
+	private static final String dirPathFileName = ".screenShotTaker";
+
+	private static String screenShotDirectory = null;
 
 	public DirectoryHelper() {
-		dirPath="";
-		dirPath=System.getProperty("user.home");
-		if(!dirPath.equals(""))
-			dirPath=dirPath+"\\";
+
+		dirPath = "";
+
+		dirPath = System.getProperty("user.home");
+
+		if (!dirPath.equals(""))
+			dirPath = dirPath + "/";
+		if (!dirPath.endsWith("/")) {
+			dirPath += "/";
+		}
+
+		File file = new File(dirPath + dirPathFileName);
+		if (!file.exists()) {
+			try {
+				setDir("");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			// File exist so check the validity of the content
+			//System.out.println("Check validity of the content");
+			try {
+				String dir = getDir();
+				//System.out.println("Dir found :: " + dir);
+				file = new File(dir);
+				if (!file.exists()) {
+					setDir("");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 
-	public String getDir() throws FileNotFoundException{
-		String result="*";
-		File file=new File(dirPath+dirPathFileName);
-		Scanner in=new Scanner(file);
-		if(in.hasNext())
-			result=in.nextLine();
+	public String getDir(boolean readFromFile) throws FileNotFoundException {
+		if (!readFromFile) {
+			return getDir();
+		}
+		String result = "*";
+		File file = new File(dirPath + dirPathFileName);
+		Scanner in = new Scanner(file);
+		if (in.hasNext())
+			result = in.nextLine();
 		in.close();
+		screenShotDirectory = result;
 		return result;
 
+	}
+
+	public String getDir() throws FileNotFoundException {
+		if (screenShotDirectory == null) {
+			return getDir(true);
+		}
+		return screenShotDirectory;
 	}
 
 	/**
 	 * To store the selected directory in user/home/.screenShotTaker folder.
 	 *
 	 */
-	public int setDir(String dir) throws IOException{
-		int result=0;
-		dirPath="C:\\Program Files (x86)\\Adobe";
-		File file=new File(dirPath+dirPathFileName);
-		if( !file.exists() && !file.canWrite() ) {
-			System.out.println("File doesn't exist and write permission is not allowd");
-			throw new IOException("Permission denied for path : "+file.getAbsolutePath());
-		}
-		FileWriter out=new FileWriter(file);
+	public int setDir(String dir) throws IOException {
+		//System.out.println("Set dir called :: "+dir);
+		int result = 0;
+		File file = new File(dirPath + dirPathFileName);
+		FileWriter out = new FileWriter(file);
 		out.write(dir);
-		result=1;
+		result = 1;
 		out.close();
 		return result;
 

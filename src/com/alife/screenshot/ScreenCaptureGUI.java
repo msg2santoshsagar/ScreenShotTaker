@@ -100,10 +100,10 @@ public class ScreenCaptureGUI {
 						File f=chooser.getSelectedFile();
 						try {
 							String absPath=f.getAbsolutePath();
-							if(absPath.charAt(absPath.length()-1)!='\\')
-								absPath=absPath+"\\";
-							dh.setDir(f.getAbsolutePath()+"/");
-							textField.setText("CWD : "+f.getAbsolutePath());
+							if(absPath.charAt(absPath.length()-1)!='/')
+								absPath=absPath+"/";
+							dh.setDir(absPath);
+							textField.setText("CWD : "+absPath);
 							textField.setToolTipText(textField.getText());
 						} catch (IOException e) {
 							textField.setText(e.getMessage());
